@@ -1,9 +1,9 @@
-import '/services/location_service.dart';
-import '/ui/widgets/display/bla_divider.dart';
-import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import '../../../data/repositories/location/location_repository.dart';
 import '../../../model/ride/locations.dart';
 import '../../theme/theme.dart';
+import '/ui/widgets/display/bla_divider.dart';
+import 'package:flutter/material.dart';
 
 ///
 /// A  Location Picker is a view to pick a Location:
@@ -50,11 +50,11 @@ class _BlaLocationPickerState extends State<BlaLocationPicker> {
     if (currentSearchText.length < 2) {
       return [];
     }
-    return LocationsService.availableLocations
+
+    final repo = Provider.of<LocationRepository>(context, listen: false);
+    return repo.getAvailableLocations()
         .where(
-          (location) => location.name.toUpperCase().contains(
-            currentSearchText.toUpperCase(),
-          ),
+          (location) => location.name.toUpperCase().contains(currentSearchText.toUpperCase()),
         )
         .toList();
   }
@@ -163,8 +163,8 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
               style: TextStyle(color: BlaColors.textLight),
               decoration: InputDecoration(
                 hintText: "Any city, street...",
-                border: InputBorder.none, // No border
-                filled: false, // No background fill
+                border: InputBorder.none,
+                filled: false,
               ),
             ),
           ),
@@ -175,7 +175,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                   onPressed: onClearTap,
                   icon: Icon(Icons.close, color: BlaColors.iconLight, size: 16),
                 )
-              : SizedBox.shrink(), // Hides the icon if text field is empty
+              : SizedBox.shrink(),
         ],
       ),
     );
@@ -186,11 +186,9 @@ class LocationTile extends StatelessWidget {
   const LocationTile({super.key, required this.location, required this.onTap});
 
   final Location location;
-
   final ValueChanged<Location> onTap;
 
   String get title => location.name;
-
   String get subTitle => location.country.name;
 
   @override
@@ -200,13 +198,12 @@ class LocationTile extends StatelessWidget {
         ListTile(
           onTap: () => onTap(location),
           leading: Icon(Icons.history, color: BlaColors.iconLight),
-
           title: Text(title, style: BlaTextStyles.body),
           subtitle: Text(
             subTitle,
             style: BlaTextStyles.label.copyWith(color: BlaColors.textLight),
           ),
-
+          
           trailing: Icon(
             Icons.arrow_forward_ios,
             color: BlaColors.iconLight,
