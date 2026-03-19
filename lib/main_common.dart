@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'data/repositories/location/location_repository.dart';
 import 'data/repositories/ride/ride_repository.dart';
 import 'data/repositories/ride_preference/ride_preference_repository.dart';
+import 'ui/states/ride_preference_state.dart';
 import 'ui/theme/theme.dart';
 import 'ui/screens/home/home_screen.dart';
 
@@ -12,6 +13,9 @@ void mainCommon({
   required RideRepository rideRepository,
   required RidePreferenceRepository ridePreferenceRepository,
 }) {
+
+  final ridePreferencesState = RidePreferencesState(ridePreferenceRepository);
+
   runApp(
     MultiProvider(
       providers: [
@@ -19,6 +23,10 @@ void mainCommon({
         Provider<RideRepository>.value(value: rideRepository),
         Provider<RidePreferenceRepository>.value(
           value: ridePreferenceRepository,
+        ),
+
+        ChangeNotifierProvider<RidePreferencesState>.value(
+          value: ridePreferencesState,
         ),
       ],
       child: const BlaBlaApp(),
